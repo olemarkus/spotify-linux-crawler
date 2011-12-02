@@ -2,6 +2,5 @@
 
 # Check for updates in the spotify deb package
 
-wget -q http://repository.spotify.com/pool/non-free/s/spotify/
-cat index.html | sed -n "s/.*a href=\"\(spotify-client.*\.deb\)\".*/\1/p"
-rm -f index.html
+INDEX_HTML=$(curl -s http://repository.spotify.com/pool/non-free/s/spotify/)
+echo "$INDEX_HTML" | sed -n "s/.*a href=\"\(spotify-client.*\.deb\)\".*/\1/p"
