@@ -16,8 +16,15 @@ do
 
 	# pull out version info
 	VERSION=$(echo $FILE | sed -n "s/^\(\([0-9]\.\)\+[0-9]*\).*/\1/p")
+
 	echo VERSION=$VERSION
 
 	MYPV=$(echo $FILE | sed -n "s/^[0-9\.]*\(g.*\)/\1/p")
 	echo MYPV=$MYPV
+
+	EBUILD_TEMPLATE=$(cat ./ebuild_template)
+	EBUILD_NAME=spotify-$VERSION.ebuild
+	echo EBUILD_NAME=$EBUILD_NAME
+
+	echo "$EBUILD_TEMPLATE" | sed "s/TEMPLATE_MYPV/$MYPV/g" > $EBUILD_NAME
 done
