@@ -1,6 +1,23 @@
 #!/bin/bash -e
-
 # Check for updates in the spotify deb package
 
 INDEX_HTML=$(curl -s http://repository.spotify.com/pool/non-free/s/spotify/)
-echo "$INDEX_HTML" | sed -n "s/.*a href=\"\(spotify-client.*\.deb\)\".*/\1/p"
+FILES=$(echo "$INDEX_HTML" | sed -n "s/.*a href=\"spotify-client-qt_\(.*\)\_.*\.deb\".*/\1/p" | awk '!x[$0]++')
+
+for FILE in $FILES
+do
+	echo Found: $FILE
+	# file name format is something like
+	# spotify-client-qt_0.6.2.291.gcccc1f5.116-1_amd64.deb
+	# the interesting parts for ebuilds would be
+	# 0.6.2.291 as part of the ebuild name (version)
+	# gcccc1f5.116-1 for in the ebuild. It's unfortunately
+	# necessary to add it at this point.
+
+	# pull out version info
+	VERSION=$(echo $FILE | sed -n "s/^\(\([0-9]\.\)\+[0-9]*\).*/\1/p")
+	echo VERSION=$VERSION
+
+	MYPV=$(echo $FILE | sed -n "s/^[0-9\.]*\(g.*\)/\1/p")
+	echo MYPV=$MYPV
+done
