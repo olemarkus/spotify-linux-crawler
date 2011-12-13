@@ -1,6 +1,12 @@
 #!/bin/bash -e
 # Check for updates in the spotify deb package
 
+# Get the current dir, as we want to store the ebuild here
+CURDIR=$(pwd)
+
+# Get the dir where we have our stuff
+SCRIPTDIR="$(dirname $(readlink -f $0))"
+
 INDEX_HTML=$(curl -s http://repository.spotify.com/pool/non-free/s/spotify/)
 FILES=$(echo "$INDEX_HTML" | sed -n "s/.*a href=\"spotify-client-qt_\(.*\)\_.*\.deb\".*/\1/p" | awk '!x[$0]++')
 
@@ -18,8 +24,8 @@ do
 
 	MYPV=$(echo $FILE | sed -n "s/^[0-9\.]*\(g.*\)/\1/p")
 
-	EBUILD_TEMPLATE=$(cat ./ebuild_template)
-	EBUILD_NAME=spotify-$VERSION.ebuild
+	EBUILD_TEMPLATE=$(cat ${SCRIPTDIR}/ebuild_template)
+	EBUILD_NAME="${CURDIR}/spotify-$VERSION.ebuild"
 
 	echo "$EBUILD_TEMPLATE" | sed "s/TEMPLATE_MYPV/$MYPV/g" > $EBUILD_NAME
 	echo "Created new ebuild: $EBUILD_NAME"
