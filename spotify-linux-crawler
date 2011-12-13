@@ -7,8 +7,15 @@ CURDIR=$(pwd)
 # Get the dir where we have our stuff
 SCRIPTDIR="$(dirname $(readlink -f $0))"
 
+# Fetch the index.html from the repository
 INDEX_HTML=$(curl -s http://repository.spotify.com/pool/non-free/s/spotify/)
-FILES=$(echo "$INDEX_HTML" | sed -n "s/.*a href=\"spotify-client-qt_\(.*\)\_.*\.deb\".*/\1/p" | awk '!x[$0]++')
+
+# Do some sed/awk magic to get the available files
+# the sed line catches any spotify-client*.deb in the index.html
+# the awk line makes sure we don't do double work
+FILES=$(echo "$INDEX_HTML" |
+	sed -n "s/.*a href=\"spotify-client-qt_\(.*\)\_.*\.deb\".*/\1/p" |
+	awk '!x[$0]++')
 
 for FILE in $FILES
 do
