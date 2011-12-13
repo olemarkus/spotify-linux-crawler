@@ -29,4 +29,7 @@ do
 
 	echo "$EBUILD_TEMPLATE" | sed "s/TEMPLATE_MYPV/$MYPV/g" > $EBUILD_NAME
 	echo "Created new ebuild: $EBUILD_NAME"
+
+	# Build the manifest
+	ebuild "${EBUILD_NAME}" manifest
 done
